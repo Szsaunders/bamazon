@@ -1,4 +1,4 @@
-##Bamazon Suite 
+# Bamazon Suite 
 
 This suite is designed to give basic database manipulation options for both the average consumer and the aspiring manager.
 
