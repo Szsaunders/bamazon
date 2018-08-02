@@ -39,74 +39,73 @@ function start () {
                 name:"purchase",
                 message: "Which item would you like to buy?",
                 choices: itemArray,
+            },
+            {  
+                type: "input",
+                name:"amount",
+                //Note to self: Add validation function here
+                default: 1,
+                message: "How much of that item would you like to buy?",
+                // validate: function (amount) {
+                //     if (typeof parseInt(amount) !== 'number') {
+                //         // Pass the return value in the done callback
+                //         console.log('You need to provide a number');
+                //       }
+                // }
             }]).then(function(answers) {
-               var purchase;
-               for (var i = 0; i < res.length; i++) {
-                   if (answers.purchase === itemArray[i]) {
-                       purchase = nameArray[i]
-                   }
-               }
-                inquirer.prompt([
-                    {  
-                        type: "input",
-                        name:"amount",
-                        //Note to self: Add validation function here
-                        default: 1,
-                        message: "How much of that item would you like to buy?",
-                        // validate: function (amount) {
-                        //     if (typeof parseInt(amount) !== 'number') {
-                        //         // Pass the return value in the done callback
-                        //         console.log('You need to provide a number');
-                        //       }
-                        // }
-                    }]).then(function(answers2) {
-                        var chosenItem;
-                        for (var i = 0; i < res.length; i++) {
-                            if (res[i].product_name === purchase) {
-                                chosenItem = res[i];
-                            }
-                        }
-                        console.log(chosenItem)
-                        if (chosenItem.stock_quantity < answers2.amount) {
-                            console.log("Insufficient stock for purchase.")
-                        }
-                        else {
-                            var stockLoss = chosenItem.stock_quantity - answers2.amount
-                            var profit = answers2.amount * chosenItem.price;
-                            connection.query(
-                                "UPDATE products SET ? WHERE ?",
-                                [
-                                    {
-                                        stock_quantity: stockLoss
-                                    },
-                                    {
-                                        item_id: chosenItem.item_id
-                                    }
-                                ],
-                                function(error) {
-                                    if (error) throw error;
-                                    console.log("Item purchased! You've spent " + profit + " dollars!");
-                                    repeater()
-                                }
-                            )
-                        }
-                        
+                var purchase;
+                for (var i = 0; i < res.length; i++) {
+                    if (answers.purchase === itemArray[i]) {
+                        purchase = nameArray[i]
                     }
-                )})
+                }
                 
+                var chosenItem;
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].product_name === purchase) {
+                        chosenItem = res[i];
+                    }
+                }
+                if (chosenItem.stock_quantity < answers.amount) {
+                    console.log("Insufficient stock for purchase.")
+                }
+                else {
+                    var stockLoss = chosenItem.stock_quantity - answers.amount
+                    var profit = answers.amount * chosenItem.price;
+                    connection.query(
+                        "UPDATE products SET ? WHERE ?",
+                        [
+                            {
+                                stock_quantity: stockLoss
+                            },
+                            {
+                                item_id: chosenItem.item_id
+                            }
+                        ],
+                        function(error) {
+                            if (error) throw error;
+                            console.log("Item purchased! You've spent " + profit + " dollars!");
+                            repeater()
+                        }
+                    )
+                }
+                
+            }
+        )})
+        
+    }
+    
+    function repeater() {
+        inquirer.prompt([
+            {  
+                type: "confirm",
+                name:"redo",
+                message: "\nWould you like to make a purchase?",
+            }]).then(function(answers) {
+                if (answers.redo) {
+                    start()
+                }
+                else {
+                    connection.end()
+                }
             })}
-
-function repeater() {
-    inquirer.prompt([
-        {  
-            type: "confirm",
-            name:"redo",
-            message: "\nWould you like to make a purchase?",
-        }]).then(function(answers) {
-            if (answers.redo) {
-                start()
-            }
-            else {
-                connection.end()
-            }
-})}
