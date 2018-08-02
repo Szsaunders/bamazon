@@ -1,14 +1,14 @@
-#Bamazon Suite 
+##Bamazon Suite 
 
 This suite is designed to give basic database manipulation options for both the average consumer and the aspiring manager.
 
-# bamazonCustomer.js
+### bamazonCustomer.js
 ![](images/img3.png)
 ![Welcome to customer service made easy!](images/img2.png)
 
 bamazonCustomer.js sets up a basic select menu for the consumer, allowing them to purchase an iten in any quantities requested.
 
-## bamazonManager.js
+### bamazonManager.js
 
 ![Welcome to store management made easy!](images/img1.png)
 
